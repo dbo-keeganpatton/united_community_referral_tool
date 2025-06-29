@@ -7,9 +7,9 @@ import streamlit as st
 
 pg = st.navigation(
     [
-        st.Page("./pages/map.py"), 
-        st.Page("./pages/referral_list.py"),
-        st.Page("./pages/dashboard.py")
+        st.Page("./pages/service_map.py", title="Service Map"), 
+        st.Page("./pages/referral_list.py", title="SpreadSheet"),
+        st.Page("./pages/dashboard.py", title="Dashboard")
     ]
 )
 

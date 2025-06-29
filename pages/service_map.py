@@ -14,7 +14,6 @@ conn = st.connection("gsheets", GSheetsConnection)
 url = 'https://cfn.maps.arcgis.com/apps/instant/lookup/index.html?appid=ffdde7dd21cd4fcabcdf33e01f95e747'
 
 
-
 ###############################
 #  Title and Logo Alignment   #
 ###############################
@@ -24,7 +23,6 @@ with title_col1:
     st.subheader("United Community Referral Tool")
 with title_col2:
     st.image(image='./static/muw_logo.png', width=100)
-
 
 
 ###############################
@@ -39,8 +37,6 @@ with st.sidebar:
 
 
 with st.container(border=True):
-    
-    
     col1, col2 = st.columns(
         spec=2, 
         gap="medium"
@@ -62,7 +58,6 @@ with st.container(border=True):
     ###############################
     with col2:
         st.text("Complete Form to log referral details")        
-        
         name = st.text_input(label="Client Name", key="client_name")
         address = st.text_input(label="Client Address", key="client_address")
         ministry = st.text_input(label="Ministry Name", key="ministry_name")
@@ -71,7 +66,15 @@ with st.container(border=True):
         if st.button(label="submit", key="map_submit_button"):
 
             if name and address and ministry:
-                
+               
+                # All text fields must be filled in for submission to work
+                # since st-gsheets has no true append method, a complete
+                # DROP AND REPLACE must be done, this action creates two dataframes
+                # one for the original state of the data in google sheets,
+                # and one for the single row that will be added.
+                # These are then concatenated through a standard pandas method,
+                # and the sheet is repopulated with the new data.
+                # Yep, this sucks...
 
                 pre_insert_data = conn.read(worksheet="Sheet1")
                 new_record = pd.DataFrame({
@@ -88,5 +91,3 @@ with st.container(border=True):
                 st.success("Data Added, Check Referral Page for Updated entry.")
             else:
                 st.warning("All fields must be completed to submit")
-
-
