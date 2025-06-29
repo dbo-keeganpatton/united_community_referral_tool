@@ -1,9 +1,25 @@
 import streamlit as st
-import pandas as pd
+from streamlit_gsheets import GSheetsConnection
+st.set_page_config(
+    layout="wide",
+    page_title="Referral Spreadsheet",
+    page_icon="📝"
+)
 
 st.title("referrals")
 
-data = pd.read_csv("./static/placeholder_data.csv")
+#######################
+# G-Sheets Connection #
+#######################
+conn = st.connection("gsheets", type=GSheetsConnection)
+data = conn.read(
+    # st.connection.read() is a passthrough
+    # for pd.read_csv(), as such, args for 
+    # that method will work here.
+    worksheet="Sheet1", 
+    header=0
+)
+
 
 st.data_editor(
     # Only the Boolean indicator for Completion of the referral

@@ -1,3 +1,6 @@
+links.json
+secrets/
+*.toml
  *.csv
  .~lock.project_doc.xlsx#
 jcps/
