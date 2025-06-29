@@ -41,8 +41,24 @@ edited_data = st.data_editor(
     # multiple users working with the app concurrently.
     data=data, 
     hide_index=True,
-    disabled=("client_name", "ministry", "address"),
-    key="data_editor"
+    disabled=("Client Name", "Ministry", "Address"),
+    key="data_editor",
+    
+    column_config={
+        "Status": st.column_config.SelectboxColumn(
+            "Status",
+            help="Select status from dropdown",
+            width="small",
+            options=[
+                "Open",
+                "Closed",
+                "Emailed",
+                "Called",
+                "Blocked"
+            ],
+            required=True,
+        )
+    }
 )
 
 # This variable is just used to compare data that currently exists on the page

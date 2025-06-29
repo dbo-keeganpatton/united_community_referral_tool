@@ -25,16 +25,6 @@ with title_col2:
     st.image(image='./static/muw_logo.png', width=100)
 
 
-###############################
-#           SideBar           #
-###############################
-with st.sidebar:
-
-    st.page_link(
-        page='./pages/referral_list.py',
-        label="Referral List"
-    )
-
 
 with st.container(border=True):
     col1, col2 = st.columns(
@@ -58,9 +48,9 @@ with st.container(border=True):
     ###############################
     with col2:
         st.text("Complete Form to log referral details")        
-        name = st.text_input(label="Client Name", key="client_name")
-        address = st.text_input(label="Client Address", key="client_address")
-        ministry = st.text_input(label="Ministry Name", key="ministry_name")
+        name = st.text_input(label="Client Name", key="Client Name")
+        address = st.text_input(label="Client Address", key="Address")
+        ministry = st.text_input(label="Ministry Name", key="Ministry")
         
 
         if st.button(label="submit", key="map_submit_button"):
@@ -78,10 +68,10 @@ with st.container(border=True):
 
                 pre_insert_data = conn.read(worksheet="Sheet1")
                 new_record = pd.DataFrame({
-                    "client_name": [name],
-                    "address": [address],
-                    "ministry": [ministry],
-                    "open": [True]
+                    "Client Name": [name],
+                    "Address": [address],
+                    "Ministry": [ministry],
+                    "Status": "Open"
                 })
 
                 add_row_to_data = pd.concat([pre_insert_data, new_record], ignore_index=True)
