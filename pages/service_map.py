@@ -5,7 +5,7 @@ from streamlit.components.v1 import iframe
 
 st.set_page_config(
     layout="wide",
-    page_title="Ministry Map Tool",
+    page_title="Ministry Map",
     page_icon="🗺️"
 )
 

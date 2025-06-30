@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 st.set_page_config(
     layout="wide",
-    page_title="Referral Spreadsheet",
+    page_title="Referrals",
     page_icon="📝"
 )
 
@@ -21,7 +21,13 @@ data = conn.read(
     # st.connection.read() is a passthrough
     # for pd.read_csv(), as such, args for 
     # that method will work here.
-    worksheet="Sheet1", 
+    worksheet="Sheet1",
+    dtype={
+        "Client Name": str,
+        "Address": str,
+        "Ministry": str,
+        "Status": str
+    },
     header=0
 )
 
