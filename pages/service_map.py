@@ -3,6 +3,7 @@ import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 from streamlit.components.v1 import iframe
 
+
 st.set_page_config(
     layout="wide",
     page_title="Ministry Map",
@@ -11,9 +12,9 @@ st.set_page_config(
 
 
 conn = st.connection("gsheets", GSheetsConnection)
+
+
 url = 'https://cfn.maps.arcgis.com/apps/instant/lookup/index.html?appid=ffdde7dd21cd4fcabcdf33e01f95e747'
-
-
 ###############################
 #  Title and Logo Alignment   #
 ###############################
@@ -48,7 +49,7 @@ with st.container(border=True):
     ###############################
     with col2:
         st.text("Complete Form to log referral details")        
-        name = st.text_input(label="Client Name", key="Client Name")
+        name = st.text_input(label="Client", key="Client")
         address = st.text_input(label="Client Address", key="Address")
         ministry = st.text_input(label="Ministry Name", key="Ministry")
         
@@ -68,7 +69,7 @@ with st.container(border=True):
 
                 pre_insert_data = conn.read(worksheet="Sheet1")
                 new_record = pd.DataFrame({
-                    "Client Name": [name],
+                    "Client": [name],
                     "Address": [address],
                     "Ministry": [ministry],
                     "Status": "Open"

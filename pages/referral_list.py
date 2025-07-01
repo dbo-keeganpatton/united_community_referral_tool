@@ -23,7 +23,7 @@ data = conn.read(
     # that method will work here.
     worksheet="Sheet1",
     dtype={
-        "Client Name": str,
+        "Client": str,
         "Address": str,
         "Ministry": str,
         "Status": str
@@ -47,7 +47,7 @@ edited_data = st.data_editor(
     # multiple users working with the app concurrently.
     data=data, 
     hide_index=True,
-    disabled=("Client Name", "Ministry", "Address"),
+    disabled=("Client", "Ministry", "Address"),
     key="data_editor",
     
     column_config={
