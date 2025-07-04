@@ -1,9 +1,12 @@
+from oauth2client.service_account import ServiceAccountCredentials
+from streamlit.components.v1 import iframe
+from dotenv import load_dotenv
 import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetsConnection
-from streamlit.components.v1 import iframe
-
-
+import gspread
+import json 
+import os
+load_dotenv()
 st.set_page_config(
     layout="wide",
     page_title="Ministry Map",
@@ -11,10 +14,21 @@ st.set_page_config(
 )
 
 
-conn = st.connection("gsheets", GSheetsConnection)
 
+#############################
+#        Gsheet Auth        #
+#############################
+creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
+scope = "https://www.googleapis.com/auth/spreadsheets"
 
+if creds_json_str is None:
+    raise ValueError("GOOGLE_SHEETS_CREDS_JSON environment variable not set.")
+
+creds_dict = json.loads(creds_json_str)
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope) 
 url = 'https://cfn.maps.arcgis.com/apps/instant/lookup/index.html?appid=ffdde7dd21cd4fcabcdf33e01f95e747'
+
+
 ###############################
 #  Title and Logo Alignment   #
 ###############################

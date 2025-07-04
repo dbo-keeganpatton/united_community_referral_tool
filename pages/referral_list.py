@@ -26,7 +26,8 @@ data = conn.read(
         "Client": str,
         "Address": str,
         "Ministry": str,
-        "Status": str
+        "Status": str,
+        "Zip": str
     },
     header=0
 )
@@ -47,7 +48,7 @@ edited_data = st.data_editor(
     # multiple users working with the app concurrently.
     data=data, 
     hide_index=True,
-    disabled=("Client", "Ministry", "Address"),
+    # disabled=("Client", "Ministry", "Address"),
     key="data_editor",
     
     column_config={
