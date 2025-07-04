@@ -1,5 +1,9 @@
 import streamlit as st
-from streamlit_gsheets import GSheetsConnection
+import sys
+import os
+sys.path.append(os.path.abspath('../api')) 
+from api.gsheet_functions import GeezSheets
+
 st.set_page_config(
     layout="wide",
     page_title="Referrals",
@@ -16,29 +20,14 @@ st.write("You can update the 'Open' column to mark when referrals have been comp
 #######################
 # G-Sheets Connection #
 #######################
-conn = st.connection("gsheets", type=GSheetsConnection)
-data = conn.read(
-    # st.connection.read() is a passthrough
-    # for pd.read_csv(), as such, args for 
-    # that method will work here.
-    worksheet="Sheet1",
-    dtype={
-        "Client": str,
-        "Address": str,
-        "Ministry": str,
-        "Status": str,
-        "Zip": str
-    },
-    header=0
-)
+conn = GeezSheets()
+data = conn.query_google_sheet_worksheet() 
 
 
-
-# Since streamlit_gsheets lacks proper Update functionality
-# a copy of the current state of the source worksheet must be captured when
-# the user opens the page.
-# This is then saved as a copy and replaced by the alterd version
-# when the user clicks the 'Save Changes button' 
+# a copy of the current state of the source worksheet must be 
+# captured when the user opens the page. This is then saved 
+# as a copy and replaced by the alterd version when the user 
+# clicks the 'Save Changes button' 
 if 'original_data' not in st.session_state:
     st.session_state.original_data = data.copy()
 
@@ -91,7 +80,7 @@ with st.container():
     with st.sidebar:
         if st.button("🔄 Refresh Data", use_container_width=True):
             # Refresh data from Google Sheets
-            st.session_state.original_data = conn.read(worksheet="Sheet1", header=0)
+            st.session_state.original_data = conn.query_google_sheet_worksheet() 
             st.rerun()
 
         # Clearly this conditional is just an indicator for the user
@@ -112,10 +101,7 @@ if save_button:
         with st.spinner("Saving changes to Google Sheets..."):
             # Runs a complete DROP and REPLACE operation essentially on the
             # source workbook.I really hate this..... Like I REALLY hate it.
-            conn.update(
-                worksheet="Sheet1",
-                data=edited_data
-            )
+            conn.update_gsheet_data(edited_data)
             
             # Once we update the source data, it is recycled back to our UI.
             st.session_state.original_data = edited_data.copy()
