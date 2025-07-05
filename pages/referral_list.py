@@ -1,9 +1,5 @@
-import streamlit as st
-import sys
-import os
-sys.path.append(os.path.abspath('../api')) 
 from api.gsheet_functions import GeezSheets
-
+import streamlit as st
 st.set_page_config(
     layout="wide",
     page_title="Referrals",
@@ -11,10 +7,8 @@ st.set_page_config(
 )
 
 
-
 st.title("Client Referral Spreadsheet")
 st.write("You can update the 'Open' column to mark when referrals have been completed.")
-
 
 
 #######################
@@ -32,14 +26,13 @@ if 'original_data' not in st.session_state:
     st.session_state.original_data = data.copy()
 
 edited_data = st.data_editor(
-    # Only the Boolean indicator for Completion of the referral
-    # is editable. This is to mitigate potential data loss by
-    # multiple users working with the app concurrently.
+    # pass the 'disabled=' arg with a set of col names
+    # to set cols that should not be edited from the app.
     data=data, 
     hide_index=True,
-    # disabled=("Client", "Ministry", "Address"),
     key="data_editor",
-    
+
+    # Set Data Validation here for Drop Downs
     column_config={
         "Status": st.column_config.SelectboxColumn(
             "Status",
@@ -63,7 +56,6 @@ edited_data = st.data_editor(
 data_changed = not edited_data.equals(st.session_state.original_data) 
 
 
-
 #################################
 #   CRUD Buttons on Sidebar     #
 #################################
@@ -75,7 +67,8 @@ with st.container():
         save_button = st.button(
             "💾 Save Changes",
             use_container_width=True,
-            disabled=not data_changed)
+            disabled=not data_changed
+        )
 
     with st.sidebar:
         if st.button("🔄 Refresh Data", use_container_width=True):
@@ -83,14 +76,11 @@ with st.container():
             st.session_state.original_data = conn.query_google_sheet_worksheet() 
             st.rerun()
 
-        # Clearly this conditional is just an indicator for the user
-        # that their actions have had an effect and that they
-        # can process the changes if they so choose.
+
         if data_changed:
             st.warning("⚠️ You have unsaved changes")
         else:
             st.success("✅ Data is up to date")
-
 
 
 ###############################################
@@ -102,7 +92,6 @@ if save_button:
             # Runs a complete DROP and REPLACE operation essentially on the
             # source workbook.I really hate this..... Like I REALLY hate it.
             conn.update_gsheet_data(edited_data)
-            
             # Once we update the source data, it is recycled back to our UI.
             st.session_state.original_data = edited_data.copy()
 

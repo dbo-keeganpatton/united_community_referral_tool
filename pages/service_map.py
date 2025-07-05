@@ -1,12 +1,7 @@
-from oauth2client.service_account import ServiceAccountCredentials
 from streamlit.components.v1 import iframe
-from dotenv import load_dotenv
+from api.gsheet_functions import GeezSheets 
 import streamlit as st
 import pandas as pd
-import gspread
-import json 
-import os
-load_dotenv()
 st.set_page_config(
     layout="wide",
     page_title="Ministry Map",
@@ -14,21 +9,8 @@ st.set_page_config(
 )
 
 
-
-#############################
-#        Gsheet Auth        #
-#############################
-creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
-scope = "https://www.googleapis.com/auth/spreadsheets"
-
-if creds_json_str is None:
-    raise ValueError("GOOGLE_SHEETS_CREDS_JSON environment variable not set.")
-
-creds_dict = json.loads(creds_json_str)
-credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope) 
+conn = GeezSheets()
 url = 'https://cfn.maps.arcgis.com/apps/instant/lookup/index.html?appid=ffdde7dd21cd4fcabcdf33e01f95e747'
-
-
 ###############################
 #  Title and Logo Alignment   #
 ###############################
@@ -38,7 +20,6 @@ with title_col1:
     st.subheader("United Community Referral Tool")
 with title_col2:
     st.image(image='./static/muw_logo.png', width=100)
-
 
 
 with st.container(border=True):
@@ -73,24 +54,24 @@ with st.container(border=True):
             if name and address and ministry:
                
                 # All text fields must be filled in for submission to work
-                # since st-gsheets has no true append method, a complete
-                # DROP AND REPLACE must be done, this action creates two dataframes
-                # one for the original state of the data in google sheets,
-                # and one for the single row that will be added.
-                # These are then concatenated through a standard pandas method,
-                # and the sheet is repopulated with the new data.
-                # Yep, this sucks...
+                # I am doing a complete DROP AND REPLACE here...
+                # this action creates two dataframes, one for the original state 
+                # of the data in google sheets and one for the single row that 
+                # will be added. These are then concatenated through a standard 
+                # pandas method, and the sheet is repopulated with the new data.
+                # Yep, this sucks... I'll find a better way at some point.
 
-                pre_insert_data = conn.read(worksheet="Sheet1")
+                pre_insert_data = conn.query_google_sheet_worksheet()
                 new_record = pd.DataFrame({
                     "Client": [name],
                     "Address": [address],
                     "Ministry": [ministry],
-                    "Status": "Open"
+                    "Status": "Open",
+                    "Zip": 1234
                 })
 
                 add_row_to_data = pd.concat([pre_insert_data, new_record], ignore_index=True)
-                conn.update(worksheet="Sheet1", data=add_row_to_data)
+                conn.update_gsheet_data(add_row_to_data)
 
 
                 st.success("Data Added, Check Referral Page for Updated entry.")
