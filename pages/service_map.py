@@ -2,6 +2,7 @@ from streamlit.components.v1 import iframe
 from api.gsheet_functions import GeezSheets 
 import streamlit as st
 import pandas as pd
+import time
 st.set_page_config(
     layout="wide",
     page_title="Ministry Map",
@@ -44,14 +45,36 @@ with st.container(border=True):
     ###############################
     with col2:
         st.text("Complete Form to log referral details")        
-        name = st.text_input(label="Client", key="Client")
-        address = st.text_input(label="Client Address", key="Address")
-        ministry = st.text_input(label="Ministry Name", key="Ministry")
         
+        # Data Schema Inputs
+        first_name = st.text_input(label="First Name", key="first_name")
+        last_name = st.text_input(label="Last Name", key="last_name")
+        hoh_first_name = st.text_input(label="Head of Houshold First Name", key="hoh_first_name")
+        hoh_last_name = st.text_input(label="Head of Household Last Name", key="hoh_last_name")
+        hoh_address = st.text_input(label="Head of Household Address", key="hoh_address")
+        hoh_zip = st.text_input(label="Head of Household Zip Code", key="hoh_zip")
+        hoh_email = st.text_input(label="Head of Household Email", key="hoh_email")
+        hoh_cell_number = st.text_input(label="Head of Household Cell", key="hoh_cell_number")
+        frsyc_name = st.text_input(label="FRSYC Name", key="frsyc_name")
+        school = st.text_input(label="school", key="school")
+        ministry = st.text_input(label="Ministry Name", key="ministry")
+        description = st.text_input(label="Description", key="description")
+        referral_create_date = time.time() 
+        notes = st.text_input(label="Notes", key="notes")
+
 
         if st.button(label="submit", key="map_submit_button"):
 
-            if name and address and ministry:
+            if (
+                # these fields must be complete for the form submission to work
+                # Notes is optional, since that will primarily be used by 
+                # ministry volunteers.
+                first_name and last_name and hoh_first_name and 
+                hoh_last_name and hoh_address and hoh_zip and
+                hoh_email and hoh_cell_number and frsyc_name and 
+                school and ministry and description and 
+                referral_create_date
+            ):
                
                 # All text fields must be filled in for submission to work
                 # I am doing a complete DROP AND REPLACE here...
@@ -62,13 +85,25 @@ with st.container(border=True):
                 # Yep, this sucks... I'll find a better way at some point.
 
                 pre_insert_data = conn.query_google_sheet_worksheet()
+            
                 new_record = pd.DataFrame({
-                    "Client": [name],
-                    "Address": [address],
-                    "Ministry": [ministry],
-                    "Status": "Open",
-                    "Zip": 1234
+                    "first_name"           : [first_name], 
+                    "last_name"            : [last_name],
+                    "hoh_first_name"       : [hoh_first_name],
+                    "hoh_last_name"        : [hoh_last_name],
+                    "hoh_address"          : [hoh_address],
+                    "hoh_zip"              : [hoh_zip],
+                    "hoh_email"            : [hoh_email],
+                    "hoh_cell_number"      : [hoh_cell_number],
+                    "frsyc_name"           : [frsyc_name],
+                    "school"               : [school],
+                    "ministry"             : [ministry],
+                    "description"          : [description],
+                    "status"               : "",
+                    "referral_create_date" : [referral_create_date], 
+                    "notes"                : ""
                 })
+
 
                 add_row_to_data = pd.concat([pre_insert_data, new_record], ignore_index=True)
                 conn.update_gsheet_data(add_row_to_data)

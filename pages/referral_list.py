@@ -34,8 +34,8 @@ edited_data = st.data_editor(
 
     # Set Data Validation here for Drop Downs
     column_config={
-        "Status": st.column_config.SelectboxColumn(
-            "Status",
+        "status": st.column_config.SelectboxColumn(
+            "status",
             help="Select status from dropdown",
             width="small",
             options=[
