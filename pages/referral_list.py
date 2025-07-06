@@ -7,7 +7,13 @@ st.set_page_config(
 )
 
 
-st.title("Client Referral Spreadsheet")
+title_col1, title_col2 = st.columns(spec=[5,1], gap=None)
+with title_col1:
+    st.title("Metro United Way")
+    st.subheader("Client Referral Spreadsheet")
+with title_col2:
+    st.image(image='./static/muw_logo.png', width=100)
+
 st.write("You can update the 'Open' column to mark when referrals have been completed.")
 
 

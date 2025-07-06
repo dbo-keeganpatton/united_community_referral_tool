@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import pandas as pd
+import duckdb
 import gspread
 import json 
 import os
@@ -39,4 +40,19 @@ class GeezSheets:
         altered_data = [dataframe.columns.tolist()] + dataframe.values.tolist()
         
         return worksheet.update('A1', altered_data)
+        
 
+    def query_google_sheet_with_sql(self, query_string):
+        creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
+        if creds_json_str is None:
+            raise ValueError("GOOGLE_SHEETS_CREDS_JSON environment variable not set.")
+
+        creds_dict = json.loads(creds_json_str)
+        gc = gspread.service_account_from_dict(creds_dict)
+
+        sh = gc.open("metro_united_way_data")
+        worksheet = sh.get_worksheet(0)
+        data = worksheet.get_all_records()
+        df = pd.DataFrame(data)
+
+        return duckdb.query(query_string).df()

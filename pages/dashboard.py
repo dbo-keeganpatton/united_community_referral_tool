@@ -1,5 +1,6 @@
 import streamlit as st
-from streamlit_gsheets import GSheetsConnection
+from api.gsheet_functions import GeezSheets 
+
 
 st.title("Dashboard")
 
@@ -9,28 +10,54 @@ st.set_page_config(
     page_icon="📊"
 )
 
-conn = st.connection("gsheets", type=GSheetsConnection)
+conn = GeezSheets()
 
 # I really can't believe this works haha
 # yes.. sql queries against a spreadsheet
-client_count = conn.query(
-    worksheet="Sheet1",
-    sql="SELECT COUNT(DISTINCT Client) AS Clients FROM Sheet1"
+client_count = conn.query_google_sheet_with_sql(
+    """
+    SELECT 
+    COUNT(DISTINCT concat('first_name', '-', 'last name')) AS Clients 
+    FROM df
+    """
 )
 
-open_referral_count = conn.query(
-    worksheet='Sheet1',
-    sql="SELECT ifnull(CAST(SUM(CASE WHEN Status='Open' THEN 1 END) AS INT64),0) AS open_refs from Sheet1"
+open_referral_count = conn.query_google_sheet_with_sql(
+    """
+    SELECT 
+    IFNULL(
+       CAST(
+          SUM(CASE WHEN status='Open' THEN 1 END) 
+          AS INT64
+       ), 0
+    ) AS open_refs 
+    FROM df
+    """
 )
 
-closed_referral_count = conn.query(
-    worksheet='Sheet1',
-    sql="SELECT ifnull(CAST(SUM(CASE WHEN Status='Closed' THEN 1 END) AS INT64),0) AS closed_refs from Sheet1"
+closed_referral_count = conn.query_google_sheet_with_sql(
+   """
+   SELECT 
+   IFNULL(
+      CAST(
+         SUM(CASE WHEN status='Closed' THEN 1 END) 
+         AS INT64
+       )
+       ,0
+   ) AS closed_refs 
+   from df
+   """
 )
 
-referral_bar_chart_data = conn.query(
-    worksheet='Sheet1',
-    sql="SELECT Status, CAST(COUNT(*) AS INT64) AS Referrals FROM Sheet1 GROUP BY 1 ORDER BY 2"
+referral_bar_chart_data = conn.query_google_sheet_with_sql(
+    """
+    SELECT 
+    status, 
+    CAST(COUNT(*) AS INT64) AS Referrals 
+    FROM df 
+    GROUP BY 1 
+    ORDER BY 2
+    """
 )
 
 
@@ -61,7 +88,7 @@ st.divider()
 
 st.bar_chart(
     data=referral_bar_chart_data,
-    x="Status",
+    x="status",
     y="Referrals",
     x_label="",
     y_label=""

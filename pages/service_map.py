@@ -10,6 +10,7 @@ st.set_page_config(
 )
 
 
+
 conn = GeezSheets()
 url = 'https://cfn.maps.arcgis.com/apps/instant/lookup/index.html?appid=ffdde7dd21cd4fcabcdf33e01f95e747'
 ###############################
@@ -99,7 +100,7 @@ with st.container(border=True):
                     "school"               : [school],
                     "ministry"             : [ministry],
                     "description"          : [description],
-                    "status"               : "",
+                    "status"               : "Open",
                     "referral_create_date" : [referral_create_date], 
                     "notes"                : ""
                 })
