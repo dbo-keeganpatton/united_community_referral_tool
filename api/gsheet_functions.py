@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import pandas as pd
+import streamlit as st
 import duckdb
 import gspread
 import json 
@@ -10,8 +11,8 @@ load_dotenv()
 
 class GeezSheets:
 
-
-    def query_google_sheet_worksheet(self):
+    @st.cache_data 
+    def query_google_sheet_worksheet(_self):
         
         creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
         if creds_json_str is None:
@@ -26,8 +27,9 @@ class GeezSheets:
         df = pd.DataFrame(data)
         return df 
 
-
-    def update_gsheet_data (self, dataframe):    
+    
+    @st.cache_data
+    def update_gsheet_data (_self, dataframe):    
         creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
         if creds_json_str is None:
             raise ValueError("GOOGLE_SHEETS_CREDS_JSON environment variable not set.")
@@ -41,8 +43,8 @@ class GeezSheets:
         
         return worksheet.update('A1', altered_data)
         
-
-    def query_google_sheet_with_sql(self, query_string):
+    @st.cache_data
+    def query_google_sheet_with_sql(_self, query_string):
         creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
         if creds_json_str is None:
             raise ValueError("GOOGLE_SHEETS_CREDS_JSON environment variable not set.")
