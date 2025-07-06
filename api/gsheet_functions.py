@@ -14,7 +14,7 @@ class GeezSheets:
     @st.cache_data 
     def query_google_sheet_worksheet(_self):
         
-        creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
+        creds_json_str = os.environ.get("GOOGLE_SHEETS_CREDS_JSON")
         if creds_json_str is None:
             raise ValueError("GOOGLE_SHEETS_CREDS_JSON environment variable not set.")
 
@@ -30,7 +30,7 @@ class GeezSheets:
     
     @st.cache_data
     def update_gsheet_data (_self, dataframe):    
-        creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
+        creds_json_str = os.environ.get("GOOGLE_SHEETS_CREDS_JSON")
         if creds_json_str is None:
             raise ValueError("GOOGLE_SHEETS_CREDS_JSON environment variable not set.")
 
@@ -45,7 +45,7 @@ class GeezSheets:
         
     @st.cache_data
     def query_google_sheet_with_sql(_self, query_string):
-        creds_json_str = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
+        creds_json_str = os.environ.get("GOOGLE_SHEETS_CREDS_JSON")
         if creds_json_str is None:
             raise ValueError("GOOGLE_SHEETS_CREDS_JSON environment variable not set.")
 
