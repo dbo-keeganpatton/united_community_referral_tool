@@ -2,7 +2,7 @@ from streamlit.components.v1 import iframe
 from api.gsheet_functions import GeezSheets 
 import streamlit as st
 import pandas as pd
-import time
+from datetime import datetime
 st.set_page_config(
     layout="wide",
     page_title="Ministry Map",
@@ -60,7 +60,7 @@ with st.container(border=True):
         school = st.text_input(label="school", key="school")
         ministry = st.text_input(label="Ministry Name", key="ministry")
         description = st.text_input(label="Description", key="description")
-        referral_create_date = time.time() 
+        referral_create_date = str(datetime.now()) 
         notes = st.text_input(label="Notes", key="notes")
 
 

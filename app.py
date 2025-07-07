@@ -9,7 +9,7 @@ load_dotenv()
 pg = st.navigation(
     [
         st.Page("./pages/service_map.py", title="Service Map"), 
-        st.Page("./pages/referral_list.py", title="SpreadSheet"),
+        st.Page("./pages/referral_list.py", title="Spreadsheet"),
         st.Page("./pages/dashboard.py", title="Dashboard")
     ]
 )

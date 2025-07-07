@@ -1,8 +1,14 @@
 import streamlit as st
 from api.gsheet_functions import GeezSheets 
 
+title_col1, title_col2 = st.columns(spec=[5,1], gap=None)
+with title_col1:
+    st.title("Metro United Way")
+    st.subheader("Dashboard")
+with title_col2:
+    st.image(image='./static/muw_logo.png', width=100)
 
-st.title("Dashboard")
+
 
 st.set_page_config(
     layout="wide",
@@ -17,7 +23,7 @@ conn = GeezSheets()
 client_count = conn.query_google_sheet_with_sql(
     """
     SELECT 
-    COUNT(DISTINCT concat('first_name', '-', 'last name')) AS Clients 
+    COUNT(DISTINCT concat(first_name, '-', last_name)) AS Clients 
     FROM df
     """
 )
@@ -52,17 +58,17 @@ closed_referral_count = conn.query_google_sheet_with_sql(
 referral_bar_chart_data = conn.query_google_sheet_with_sql(
     """
     SELECT 
-    status, 
-    CAST(COUNT(*) AS INT64) AS Referrals 
-    FROM df 
-    GROUP BY 1 
-    ORDER BY 2
+    status,
+    count(*) AS referrals
+    FROM df
+    GROUP BY status
+    ORDER BY referrals DESC
     """
 )
 
 
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.metric(
         label="Clients",
@@ -84,15 +90,32 @@ with col3:
         border=True
     )
 
+with col4:
+    st.metric(
+        label="Avg Days to Close",
+        value=10,
+        border=True
+    )
+
 st.divider()
 
-st.bar_chart(
-    data=referral_bar_chart_data,
-    x="status",
-    y="Referrals",
-    x_label="",
-    y_label=""
-)
+t1, t2 = st.columns(2)
 
+with t1:
+    st.bar_chart(
+        data=referral_bar_chart_data,
+        x="status",
+        y="referrals",
+        x_label="",
+        y_label=""
+    )
 
+with t2:
+    st.bar_chart(
+        data=referral_bar_chart_data,
+        x="status",
+        y="referrals",
+        x_label="",
+        y_label=""
+    )
 
