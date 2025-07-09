@@ -1,5 +1,5 @@
 import streamlit as st
-from api.gsheet_functions import GeezSheets 
+from api.gsheet_functions import GoogleSheets 
 
 title_col1, title_col2 = st.columns(spec=[5,1], gap=None)
 with title_col1:
@@ -16,11 +16,11 @@ st.set_page_config(
     page_icon="📊"
 )
 
-conn = GeezSheets()
+conn = GoogleSheets()
 
 # I really can't believe this works haha
 # yes.. sql queries against a spreadsheet
-client_count = conn.query_google_sheet_with_sql(
+client_count = conn.Visualize_Data(
     """
     SELECT 
     COUNT(DISTINCT concat(first_name, '-', last_name)) AS Clients 
@@ -28,7 +28,7 @@ client_count = conn.query_google_sheet_with_sql(
     """
 )
 
-open_referral_count = conn.query_google_sheet_with_sql(
+open_referral_count = conn.Visualize_Data(
     """
     SELECT 
     IFNULL(
@@ -41,7 +41,7 @@ open_referral_count = conn.query_google_sheet_with_sql(
     """
 )
 
-closed_referral_count = conn.query_google_sheet_with_sql(
+closed_referral_count = conn.Visualize_Data(
    """
    SELECT 
    IFNULL(
@@ -55,7 +55,7 @@ closed_referral_count = conn.query_google_sheet_with_sql(
    """
 )
 
-referral_bar_chart_data = conn.query_google_sheet_with_sql(
+referral_bar_chart_data = conn.Visualize_Data(
     """
     SELECT 
     status,

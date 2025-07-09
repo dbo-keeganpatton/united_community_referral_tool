@@ -1,4 +1,4 @@
-from api.gsheet_functions import GeezSheets
+from api.gsheet_functions import GoogleSheets 
 import streamlit as st
 st.set_page_config(
     layout="wide",
@@ -20,13 +20,13 @@ st.write("You can update the 'Open' column to mark when referrals have been comp
 #######################
 # G-Sheets Connection #
 #######################
-conn = GeezSheets()
-data = conn.query_google_sheet_worksheet() 
+conn = GoogleSheets()
+data = conn.Going_To_Get_Data() 
 
 
 # a copy of the current state of the source worksheet must be 
 # captured when the user opens the page. This is then saved 
-# as a copy and replaced by the alterd version when the user 
+# as a copy and replaced by the altered version when the user 
 # clicks the 'Save Changes button' 
 if 'original_data' not in st.session_state:
     st.session_state.original_data = data.copy()
@@ -79,7 +79,7 @@ with st.container():
     with st.sidebar:
         if st.button("🔄 Refresh Data", use_container_width=True):
             # Refresh data from Google Sheets
-            st.session_state.original_data = conn.query_google_sheet_worksheet() 
+            st.cache_data.clear() 
             st.rerun()
 
 
@@ -97,7 +97,7 @@ if save_button:
         with st.spinner("Saving changes to Google Sheets..."):
             # Runs a complete DROP and REPLACE operation essentially on the
             # source workbook.I really hate this..... Like I REALLY hate it.
-            conn.update_gsheet_data(edited_data)
+            conn.Update_Data(edited_data)
             # Once we update the source data, it is recycled back to our UI.
             st.session_state.original_data = edited_data.copy()
 
