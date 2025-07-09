@@ -23,7 +23,7 @@ conn = GoogleSheets()
 client_count = conn.Visualize_Data(
     """
     SELECT 
-    COUNT(DISTINCT concat(first_name, '-', last_name)) AS Clients 
+    COUNT(DISTINCT concat(student_first_name, '-', student_last_name)) AS Clients 
     FROM df
     """
 )
