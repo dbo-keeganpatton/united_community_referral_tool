@@ -2,6 +2,7 @@ from streamlit.components.v1 import iframe
 from api.gsheet_functions import GoogleSheets 
 import streamlit as st
 import pandas as pd
+import time
 from datetime import datetime
 
 st.set_page_config(
@@ -13,6 +14,7 @@ st.set_page_config(
 conn = GoogleSheets()
 url = 'https://cfn.maps.arcgis.com/apps/instant/lookup/index.html?appid=ffdde7dd21cd4fcabcdf33e01f95e747'
 
+
 ###############################
 #  Title and Logo Alignment   #
 ###############################
@@ -23,11 +25,26 @@ with title_col1:
 with title_col2:
     st.image(image='./static/muw_logo.png', width=100)
 
+
+
+# This stages the page for a reload flow after the 
+# @st.dialog modal decorator has been confirmed for
+# referral form submission.
+# This value will be updated to non-zero by confirming that data
+# will be added to our database. After this action, the
+# counter and all session state vars will be reset, triggering
+# a full app reload.
+if 'form_key' not in st.session_state:
+    st.session_state.form_key = 0
+
+
 with st.container(border=True):
     col1, col2 = st.columns(
         spec=2, 
         gap="medium"
-    ) 
+    )
+    
+
     ###############################
     #      ArcGIS Map Embed       #
     ###############################
@@ -40,6 +57,8 @@ with st.container(border=True):
                 scrolling=True
             )
 
+    
+
     ###############################
     #        Core User CRUD       #
     ###############################
@@ -47,33 +66,34 @@ with st.container(border=True):
         st.text("Complete Form to log referral details")        
         
         # Data Schema Inputs
-        student_first_name = st.text_input(label="Student First Name", key="student_first_name")
-        student_last_name = st.text_input(label="Student Last Name", key="student_last_name")
-        hoh_first_name = st.text_input(label="Head of Houshold First Name", key="hoh_first_name")
-        hoh_last_name = st.text_input(label="Head of Household Last Name", key="hoh_last_name")
-        hoh_address = st.text_input(label="Head of Household Address", key="hoh_address")
-        hoh_zip = st.text_input(label="Head of Household Zip Code", key="hoh_zip")
-        hoh_email = st.text_input(label="Head of Household Email", key="hoh_email")
-        hoh_cell_number = st.text_input(label="Head of Household Cell", key="hoh_cell_number")
-        frsyc_name = st.text_input(label="FRSYC Name", key="frsyc_name")
-        school = st.text_input(label="School", key="school")
-        ministry = st.text_input(label="Ministry Name", key="ministry")
-        description_of_support_needed = st.text_input(label="Description of Support Needed", key="description")
+        student_first_name = st.text_input(label="Student First Name", key=f"student_first_name_{st.session_state.form_key}")
+        student_last_name = st.text_input(label="Student Last Name", key=f"student_last_name_{st.session_state.form_key}")
+        hoh_first_name = st.text_input(label="Head of Houshold First Name", key=f"hoh_first_name_{st.session_state.form_key}")
+        hoh_last_name = st.text_input(label="Head of Household Last Name", key=f"hoh_last_name_{st.session_state.form_key}")
+        hoh_address = st.text_input(label="Head of Household Address", key=f"hoh_address_{st.session_state.form_key}")
+        hoh_zip = st.text_input(label="Head of Household Zip Code", key=f"hoh_zip_{st.session_state.form_key}")
+        hoh_email = st.text_input(label="Head of Household Email", key=f"hoh_email_{st.session_state.form_key}")
+        hoh_cell_number = st.text_input(label="Head of Household Cell", key=f"hoh_cell_number_{st.session_state.form_key}")
+        frsyc_name = st.text_input(label="FRSYC Name", key=f"frsyc_name_{st.session_state.form_key}")
+        school = st.text_input(label="School", key=f"school_{st.session_state.form_key}")
+        ministry = st.text_input(label="Ministry Name", key=f"ministry_{st.session_state.form_key}")
+        description_of_support_needed = st.text_input(label=f"Description of Support Needed", key=f"description_{st.session_state.form_key}")
         referral_create_date = str(datetime.now().replace(microsecond=0)) 
-        notes = st.text_input(label="Notes", key="notes")
+        notes = st.text_input(label="Notes", key=f"notes_{st.session_state.form_key}")
+    
         
-        # Define the dialog function
-        @st.dialog("Submit Referral to database?")
+        ##################################
+        #     Modal Confirmation Flow    #
+        ##################################
+        @st.dialog("Submit Referral to Database?")
         def submit_referral_confirmation():
             st.write("Are you sure you want to submit this referral?")
             
             col1, col2 = st.columns(2)
-            
             with col1:
                 if st.button("Yes, Submit", type="primary"):
                     
                     pre_insert_data = conn.Going_To_Get_Data()
-                
                     new_record = pd.DataFrame({
                         "student_first_name"               : [student_first_name], 
                         "student_last_name"                : [student_last_name],
@@ -95,9 +115,16 @@ with st.container(border=True):
                     add_row_to_data = pd.concat([pre_insert_data, new_record], ignore_index=True)
                     conn.Update_Data(add_row_to_data)
                     
+                    # Once the user selects "confirm" to add their form inputs to 
+                    # the app's backend, the app will pause for 1 second before
+                    # resetting all session state vars, and triggering
+                    # full app reload.
                     st.success("Data Added, Check Referral Page for Updated entry.")
+                    time.sleep(1)
+                    st.session_state.form_key += 1
                     st.rerun()
-                    
+            
+
             with col2:
                 if st.button("Cancel"):
                     st.rerun()
