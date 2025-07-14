@@ -1,7 +1,6 @@
 __pycache__
 .env
 email.txt
-notes.yml
 links.json
 secrets/
 *.toml

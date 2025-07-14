@@ -57,7 +57,7 @@ edited_data = st.data_editor(
 )
 
 # This variable is just used to compare data that currently exists on the page
-# to what was seein in the original data table when it was sourced from 
+# to what was seen in the original data table when it was sourced from 
 # Google Sheets.
 data_changed = not edited_data.equals(st.session_state.original_data) 
 

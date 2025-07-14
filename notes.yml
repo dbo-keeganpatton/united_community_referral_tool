@@ -1,0 +1,36 @@
+ToDo:
+  - Dashboard stuff
+  - add timestamps automation
+  - Spreadsheet page should update table auto after user enters new referral on map page
+  - SQL filter between CRUD ops in app and in source spreadsheet. 
+  - Procedural check to see if source workbook has been updated
+  - CRUD priority check logic to evaluate and reconcile divergent changes from App versue source workbook
+  - SQL table schema model
+  - Spreadsheet SQL snapshots
+  - OAuth flow for authentication
+  - Authorization rules for each party
+
+Done:
+  - [DONE] Add additional columns
+  - [DONE] update Data button for saved changes on referral page stopped working
+  - [DONE] Convert to GSpread entirely
+  - [DONE] Data validation is not persisting for Status col in spreadsheet
+  - [DONE] Refresh button does not actually refresh on referral list
+  - [NO LONGER NEEDED] Email Ministry Automation
+  - [NO LONGER NEEDED] Communication automation is paramount
+
+
+[DONE]
+Devops:
+  Dir Struct:
+    my-streamlit-app/
+    │
+    ├── app.py
+    ├── requirements.txt
+    ├── Dockerfile
+    ├── .dockerignore
+    ├── Procfile
+    ├── .github/
+    │   └── workflows/
+    │       └── deploy.yml
+    └── README.md
