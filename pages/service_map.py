@@ -25,7 +25,8 @@ with title_col1:
 with title_col2:
     st.image(image='./static/muw_logo.png', width=100)
 
-
+with st.sidebar:
+    st.button("Log Out", on_click=st.logout)
 
 # This stages the page for a reload flow after the 
 # @st.dialog modal decorator has been confirmed for

@@ -16,6 +16,9 @@ with title_col2:
 
 st.write("You can update the 'Open' column to mark when referrals have been completed.")
 
+with st.sidebar:
+    st.button("Log Out", on_click=st.logout)
+
 
 #######################
 # G-Sheets Connection #
