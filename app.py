@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 pg = st.navigation(
     [
+        st.Page("./pages/login.py", title="Login"),
         st.Page("./pages/service_map.py", title="Service Map"), 
         st.Page("./pages/referral_list.py", title="Spreadsheet"),
         st.Page("./pages/dashboard.py", title="Dashboard")
